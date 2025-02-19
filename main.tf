@@ -27,7 +27,7 @@ data "aws_iam_policy_document" "gitlab-tf" {
 
     condition {
       test     = "StringLike"
-      variable = "gitlab.com:sub"
+      variable = "${var.gitlab_domain}:sub"
       values   = var.gitlab_tf_admin_oidc_subs
     }
 
@@ -49,7 +49,7 @@ data "aws_iam_policy_document" "gitlab-tf-readonly" {
 
     condition {
       test     = "StringLike"
-      variable = "gitlab.com:sub"
+      variable = "${var.gitlab_domain}:sub"
       values   = var.gitlab_tf_readonly_oidc_subs
     }
 
@@ -103,11 +103,11 @@ resource "aws_iam_role_policy_attachment" "terraform-readonly" {
 }
 
 resource "aws_iam_openid_connect_provider" "gitlab" {
-  url = "https://gitlab.com"
+  url = "https://${var.gitlab_domain}"
 
   client_id_list = [
-    "https://gitlab.com",
+    "https://${var.gitlab_domain}",
   ]
 
-  thumbprint_list = ["fb07e4e621fa075c961b661ae299ade7681df5d5"]
+  thumbprint_list = [var.gitlab_thumbprint]
 }
